@@ -1,12 +1,10 @@
 const inquirer = require('inquirer');
 const fs = require('fs');
-const util = require('util');
-const generateReadme = require("./utils/generateReadme");
-const writeFileAsync = util.promisify(fs.writeFile);
+const path = require('path');
+const generateReadme = require("./util/generateMarkdown");
 
-function promptUser(){
-return inquirer
-  .prompt([
+
+const prompts = [
     {
       type: 'input',
       message: 'What is the title of your project?',
@@ -23,7 +21,7 @@ return inquirer
     {
         type: 'input',
         message: 'Describe the installation process',
-        name: 'description',
+        name: 'install',
         
       },
     {
@@ -61,20 +59,28 @@ return inquirer
         name: "username",
         message: "Please enter your GitHub username: "
     },
-  ])
+]
+
+function writeFile(fileName, data) {
+  return fs.writeFileSync(path.join(process.cwd(), fileName), data)
 }
 
-async function init() {
-    try {
+function init() {
+     
         // Ask user questions and generate responses
-        const answers = await promptUser();
-        const generateContent = generateReadme(answers);
-        // Write new README
-        await writeFileAsync('./dist/README.md', generateContent);
-        console.log('✔️  Successfully wrote to README.md');
-    }   catch(err) {
-        console.log(err);
+        // const answers = promptUser();
+
+inquirer.prompt(prompts).then((responses)=> {
+  writeFile('ReadMe.md', generateReadme({...responses}))
+})
+
+        // const generateContent = generateReadme(answers);
+        // // Write new README
+        // writeFileAsync('./dist/README.md', generateContent);
+        // console.log('✔️  Successfully wrote to README.md');
     }
-  }
   
+  
+
+
   init();  
