@@ -21,13 +21,13 @@ const prompts = [
     {
         type: 'input',
         message: 'Describe the installation process',
-        name: 'install',
+        name: 'installation',
         
       },
     {
       type: 'input',
       message: 'How do you use this?',
-      name: 'usage information',
+      name: 'usage',
       
     },
     {
@@ -35,7 +35,7 @@ const prompts = [
       name: 'license',
       message: 'Which License should be used for this project?',
       choices: [
-        "Academic",
+        "Eclipse",
         "GNU",
         "MIT",
         "Mozilla"
@@ -44,7 +44,7 @@ const prompts = [
     },
     {
       type: 'input',
-      name: 'contributing',
+      name: 'contributions',
       message: 'Were there any other contributors for this project?',
       
     },
@@ -61,26 +61,18 @@ const prompts = [
     },
 ]
 
-function writeFile(fileName, data) {
-  return fs.writeFileSync(path.join(process.cwd(), fileName), data)
-}
 
-function init() {
-     
-        // Ask user questions and generate responses
-        // const answers = promptUser();
+  function writeToFile(fileName, data) {
+    return fs.writeFileSync(path.join(process.cwd(), fileName), data);
+  };
 
-inquirer.prompt(prompts).then((responses)=> {
-  writeFile('ReadMe.md', generateReadme({...responses}))
-})
+// need to write function to initialize the app
 
-        // const generateContent = generateReadme(answers);
-        // // Write new README
-        // writeFileAsync('./dist/README.md', generateContent);
-        // console.log('✔️  Successfully wrote to README.md');
-    }
-  
-  
+const init = () => {
+    const answers = inquirer.prompt(prompts)
+        .then((answers) => writeToFile('/README.md', generateReadme({...answers})))
+        .then(() => console.log(answers))
+        .catch((err) => console.log(err));    
+};
 
-
-  init();  
+init();
